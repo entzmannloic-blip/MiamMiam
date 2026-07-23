@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Repas du soir</title>
+<title>La Roue &mdash; Repas du soir &amp; Ça chauffe</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rye&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -13,6 +13,7 @@
   --gold:#D4A548; --gold-light:#E8C87E; --pine:#1F4A3D; --ink:#241A16;
   --bulb-off:#5A3A2E; --skin:#E9B896; --skin-shade:#D49E7C;
   --hair:#4A3122; --hair-light:#6B4830;
+  --plum:#6E2352; --rose:#D9627E;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
@@ -26,6 +27,12 @@ body{
   overflow-x:hidden;
   padding:16px 10px calc(16px + env(safe-area-inset-bottom));
   position:relative;
+  transition:background .5s ease;
+}
+body.deck-couple{
+  background:
+    radial-gradient(ellipse at 50% -20%, #3a1030 0%, transparent 60%),
+    repeating-linear-gradient(90deg, #4E1638 0 64px, var(--plum) 64px 128px);
 }
 body::after{content:"";position:fixed;inset:0;pointer-events:none;
   background:radial-gradient(ellipse at 50% 45%, transparent 40%, rgba(20,10,8,.55) 100%)}
@@ -33,28 +40,38 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;
 .marquee{text-align:center;margin-bottom:4px;position:relative;z-index:2}
 .marquee .eyebrow{font-size:10px;letter-spacing:.34em;text-transform:uppercase;
   color:var(--gold-light);font-weight:700;margin-bottom:5px}
-.marquee h1{font-family:'Rye',serif;font-size:clamp(24px,6.6vw,42px);line-height:1.05;color:var(--cream);
-  text-shadow:0 2px 0 var(--carmine-dark),0 4px 0 rgba(0,0,0,.35),0 0 24px rgba(212,165,72,.35)}
+.marquee h1{font-family:'Rye',serif;font-size:clamp(23px,6.4vw,40px);line-height:1.05;color:var(--cream);
+  text-shadow:0 2px 0 rgba(0,0,0,.45),0 4px 0 rgba(0,0,0,.3),0 0 24px rgba(212,165,72,.35)}
 .marquee h1 span{color:var(--gold)}
 
-#intro{display:flex;flex-direction:column;align-items:center;gap:22px;z-index:2;text-align:center;
-  animation:fadeUp .6s ease both;margin-top:16px}
-#intro p{max-width:310px;font-size:14px;line-height:1.55;color:#EBDFC6}
-.ticket{font-family:'Rye',serif;font-size:clamp(17px,4.6vw,22px);color:var(--ink);
-  background:linear-gradient(180deg,var(--gold-light),var(--gold));border:none;cursor:pointer;
-  padding:16px 30px;border-radius:8px;position:relative;
+/* ---------- ACCUEIL : deux guichets ---------- */
+#intro{display:flex;flex-direction:column;align-items:center;gap:16px;z-index:2;
+  animation:fadeUp .6s ease both;margin-top:20px;width:100%;max-width:340px}
+#intro .lead{font-size:13.5px;line-height:1.55;color:#EBDFC6;text-align:center;margin-bottom:6px}
+
+.ticket{width:100%;text-align:left;border:none;cursor:pointer;position:relative;
+  background:linear-gradient(180deg,var(--gold-light),var(--gold));
+  color:var(--ink);border-radius:10px;padding:16px 18px 16px 56px;
   box-shadow:0 6px 0 #8F6C24,0 12px 24px rgba(0,0,0,.45);
-  transition:transform .12s ease,box-shadow .12s ease;letter-spacing:.03em}
+  transition:transform .12s ease,box-shadow .12s ease}
+.ticket.spicy{background:linear-gradient(180deg,#F0A7BC,var(--rose));color:#3A0E22;
+  box-shadow:0 6px 0 #8E3350,0 12px 24px rgba(0,0,0,.45)}
 .ticket::before,.ticket::after{content:"";position:absolute;top:50%;width:16px;height:16px;
-  border-radius:50%;background:var(--carmine-dark);transform:translateY(-50%)}
+  border-radius:50%;background:var(--carmine-dark);transform:translateY(-50%);transition:background .5s}
 .ticket::before{left:-8px}.ticket::after{right:-8px}
+body.deck-couple .ticket::before,body.deck-couple .ticket::after{background:#4E1638}
+.ticket .ico{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:26px}
+.ticket .kicker{font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;opacity:.72}
+.ticket .name{font-family:'Rye',serif;font-size:clamp(17px,4.6vw,21px);line-height:1.15;margin:2px 0 3px}
+.ticket .sub{font-size:11.5px;line-height:1.35;opacity:.82}
 .ticket:active{transform:translateY(4px);box-shadow:0 2px 0 #8F6C24,0 6px 12px rgba(0,0,0,.45)}
+.ticket.spicy:active{box-shadow:0 2px 0 #8E3350,0 6px 12px rgba(0,0,0,.45)}
 .ticket:focus-visible{outline:3px solid var(--cream);outline-offset:4px}
 
+/* ---------- SCENE ---------- */
 #stage{display:none;flex-direction:column;align-items:center;z-index:2;width:100%}
 #stage.show{display:flex;animation:popIn .7s cubic-bezier(.2,1.4,.4,1) both}
 
-/* ---- SCENE : la roue est centrée dans la page, le chef vient dans la marge ---- */
 .scene{position:relative;width:min(58vw,300px);aspect-ratio:1;margin:16px auto 20px}
 .wheel-wrap{position:absolute;inset:0}
 
@@ -63,12 +80,17 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;
 .ring{position:absolute;inset:0;border-radius:50%;
   background:radial-gradient(circle at 30% 25%,#C33A3F,var(--carmine-dark) 70%);
   box-shadow:0 0 0 5px var(--gold),0 0 0 7px var(--carmine-dark),
+    0 18px 46px rgba(0,0,0,.6),inset 0 0 28px rgba(0,0,0,.45);transition:background .5s,box-shadow .5s}
+body.deck-couple .ring{
+  background:radial-gradient(circle at 30% 25%,#8C2F68,#4E1638 70%);
+  box-shadow:0 0 0 5px var(--gold),0 0 0 7px #4E1638,
     0 18px 46px rgba(0,0,0,.6),inset 0 0 28px rgba(0,0,0,.45)}
 .bulb{position:absolute;width:4.6%;aspect-ratio:1;border-radius:50%;background:var(--bulb-off);
   box-shadow:inset 0 -1px 2px rgba(0,0,0,.5);transition:background .12s,box-shadow .12s}
 .bulb.on{background:#FFE9A8;box-shadow:0 0 9px 3px rgba(255,220,140,.85),inset 0 0 3px #fff}
 
-#wheelSvg{position:absolute;top:7.5%;left:7.5%;width:85%;height:85%;display:block;border-radius:50%;transform:rotate(0deg);transform-origin:50% 50%;will-change:transform}
+#wheelSvg{position:absolute;top:7.5%;left:7.5%;width:85%;height:85%;display:block;
+  border-radius:50%;transform:rotate(0deg);transform-origin:50% 50%;will-change:transform}
 #wheelSvg.spinning{transition:transform 5.2s cubic-bezier(.12,.68,.05,1)}
 
 .hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
@@ -77,33 +99,45 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;
   box-shadow:0 0 0 4px var(--carmine-dark),0 4px 12px rgba(0,0,0,.5);z-index:5;
   display:flex;align-items:center;justify-content:center;
   font-family:'Rye',serif;color:var(--carmine-dark);font-size:clamp(10px,2.5vw,13px);
-  user-select:none;letter-spacing:.02em;line-height:1;text-align:center;padding-bottom:1px}
+  user-select:none;letter-spacing:.02em;line-height:1;text-align:center;padding-bottom:1px;
+  transition:box-shadow .5s,color .5s}
+body.deck-couple .hub{box-shadow:0 0 0 4px #4E1638,0 4px 12px rgba(0,0,0,.5);color:#4E1638}
 
-/* ---- CHEF : dans la marge gauche, la main sur la roue ---- */
+/* ---------- CHEF / MONSIEUR ---------- */
 .chef{position:absolute;left:-36%;bottom:-4%;width:44%;z-index:8;
   filter:drop-shadow(0 10px 18px rgba(0,0,0,.55));transform-origin:50% 100%}
 .chef.bobbing{animation:bob .38s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-5px) rotate(1.5deg)}}
-#chefArm{transform-origin:78px 118px}
+#chefArm{transform-origin:120px 164px}
 .chef.bobbing #chefArm{animation:crank .38s linear infinite}
 @keyframes crank{0%{transform:rotate(-16deg)}50%{transform:rotate(14deg)}100%{transform:rotate(-16deg)}}
+.hidden-part{display:none}
+#heart{animation:floatHeart 2.6s ease-in-out infinite}
+@keyframes floatHeart{0%,100%{transform:translateY(0);opacity:.9}50%{transform:translateY(-7px);opacity:1}}
 
 .bubble{position:absolute;left:-38%;top:-6%;z-index:9;
   background:var(--cream);color:var(--ink);border:3px solid var(--gold);border-radius:12px;
-  padding:7px 10px;font-size:11.5px;font-weight:500;line-height:1.35;width:110px;text-align:center;
+  padding:7px 10px;font-size:11.5px;font-weight:500;line-height:1.35;width:112px;text-align:center;
   box-shadow:0 6px 14px rgba(0,0,0,.4);transition:opacity .25s,transform .25s}
 .bubble::after{content:"";position:absolute;bottom:-11px;left:24px;
   border:8px solid transparent;border-top-color:var(--gold)}
 .bubble.hidden{opacity:0;transform:translateY(6px) scale(.9);pointer-events:none}
 
+.controls{display:flex;flex-direction:column;align-items:center;gap:12px}
 #spinBtn{font-family:'Rye',serif;font-size:clamp(17px,4.4vw,22px);letter-spacing:.06em;color:var(--cream);
   background:linear-gradient(180deg,#C33A3F,var(--carmine) 60%,var(--carmine-dark));
   border:3px solid var(--gold);border-radius:999px;padding:13px 38px;cursor:pointer;
   box-shadow:0 6px 0 #4F1012,0 14px 28px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.25);
-  transition:transform .12s,box-shadow .12s,opacity .3s}
-#spinBtn:active{transform:translateY(4px);box-shadow:0 2px 0 #4F1012,0 8px 16px rgba(0,0,0,.5)}
+  transition:transform .12s,box-shadow .12s,opacity .3s,background .5s}
+body.deck-couple #spinBtn{background:linear-gradient(180deg,#9C3A78,var(--plum) 60%,#4E1638);
+  box-shadow:0 6px 0 #33091F,0 14px 28px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.25)}
+#spinBtn:active{transform:translateY(4px)}
 #spinBtn:disabled{opacity:.45;cursor:default}
 #spinBtn:focus-visible{outline:3px solid var(--cream);outline-offset:4px}
+.back{background:none;border:none;color:#EBDFC6;font-family:'DM Sans',sans-serif;font-size:12px;
+  letter-spacing:.12em;text-transform:uppercase;font-weight:700;cursor:pointer;opacity:.75;padding:6px}
+.back:hover{opacity:1}
+.back:focus-visible{outline:2px solid var(--cream);outline-offset:3px;border-radius:4px}
 
 #result{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;
   background:rgba(20,10,8,.72);backdrop-filter:blur(3px);padding:20px}
@@ -113,13 +147,16 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;
   animation:popIn .55s cubic-bezier(.2,1.5,.4,1) both}
 .result-card .stamp{font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;
   color:var(--carmine);font-weight:700;margin-bottom:10px}
+body.deck-couple .result-card .stamp{color:var(--plum)}
 .result-card .emoji{font-size:56px;line-height:1;display:block;margin-bottom:10px}
-.result-card h2{font-family:'Rye',serif;font-size:28px;color:var(--carmine-dark);margin-bottom:8px}
+.result-card h2{font-family:'Rye',serif;font-size:27px;color:var(--carmine-dark);margin-bottom:8px}
+body.deck-couple .result-card h2{color:var(--plum)}
 .result-card p{font-size:13.5px;line-height:1.5;color:#5C4A3E;margin-bottom:20px}
 .result-card .again{font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:.05em;
   text-transform:uppercase;background:var(--carmine);color:var(--cream);border:none;border-radius:999px;
   padding:12px 26px;cursor:pointer;box-shadow:0 4px 0 var(--carmine-dark);transition:transform .12s,box-shadow .12s}
-.result-card .again:active{transform:translateY(3px);box-shadow:0 1px 0 var(--carmine-dark)}
+body.deck-couple .result-card .again{background:var(--plum);box-shadow:0 4px 0 #33091F}
+.result-card .again:active{transform:translateY(3px)}
 
 .confetti{position:fixed;top:-12px;z-index:25;pointer-events:none;border-radius:2px;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.9}}
@@ -133,7 +170,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;
 }
 @media (prefers-reduced-motion: reduce){
   #wheelSvg.spinning{transition-duration:1.2s}
-  .confetti{display:none}
+  .confetti,#heart{animation:none}
   #intro,#stage.show,.result-card{animation:none}
   .chef.bobbing,.chef.bobbing #chefArm{animation:none}
 }
@@ -142,15 +179,30 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;
 <body>
 
 <header class="marquee">
-  <div class="eyebrow">Ce soir &middot; Grand tirage</div>
-  <h1>Repas <span>du soir</span></h1>
+  <div class="eyebrow" id="eyebrow">Deux guichets &middot; un seul verdict</div>
+  <h1 id="title">La <span>Roue</span></h1>
 </header>
 
+<!-- ACCUEIL -->
 <section id="intro">
-  <p>Fini les d&eacute;bats de vingt minutes devant le frigo. Le chef tourne, la roue d&eacute;cide.</p>
-  <button class="ticket" id="revealBtn">&#127914; Faire appara&icirc;tre la roue</button>
+  <p class="lead">Choisissez votre guichet. La roue tranche, vous ex&eacute;cutez.</p>
+
+  <button class="ticket" data-deck="repas">
+    <span class="ico">&#127829;</span>
+    <span class="kicker">Guichet n&deg;1</span>
+    <span class="name">Repas du soir</span>
+    <span class="sub">Fini les vingt minutes debout devant le frigo.</span>
+  </button>
+
+  <button class="ticket spicy" data-deck="couple">
+    <span class="ico">&#127798;</span>
+    <span class="kicker">Guichet n&deg;2 &middot; r&eacute;serv&eacute; aux adultes consentants</span>
+    <span class="name">&Ccedil;a chauffe &agrave; deux</span>
+    <span class="sub">Le programme de la soir&eacute;e ne se n&eacute;gocie plus. Il se tire.</span>
+  </button>
 </section>
 
+<!-- SCENE -->
 <section id="stage" aria-live="polite">
   <div class="scene">
     <div class="wheel-wrap">
@@ -160,20 +212,66 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;
         <path d="M23 46 L36 14 L28 14 Z" fill="#F6EFDF"/>
       </svg>
       <div class="ring" id="ring"></div>
-      <svg id="wheelSvg" viewBox="0 0 200 200" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Roue des repas"></svg>
-      <div class="hub">Repas</div>
+      <svg id="wheelSvg" viewBox="0 0 200 200" width="100%" height="100%"
+           preserveAspectRatio="xMidYMid meet" role="img" aria-label="Roue"></svg>
+      <div class="hub" id="hub">Repas</div>
     </div>
 
     <div class="bubble" id="bubble">On mange quoi&nbsp;?</div>
 
-    <svg class="chef" id="chef" viewBox="0 0 160 210" aria-hidden="true">
-      <g>
+    <svg class="chef" id="chef" viewBox="0 0 160 214" aria-hidden="true">
+      <!-- toque (guichet repas) -->
+      <g id="toque">
         <ellipse cx="48" cy="34" rx="21" ry="19" fill="#FBF7EE"/>
         <ellipse cx="78" cy="24" rx="24" ry="21" fill="#FFFDF7"/>
         <ellipse cx="106" cy="36" rx="20" ry="18" fill="#F3ECE0"/>
         <rect x="42" y="48" width="72" height="17" rx="6" fill="#FFFDF7"/>
         <rect x="42" y="58" width="72" height="7" rx="3" fill="#E5DCCB"/>
       </g>
+      <!-- cheveux (guichet couple) -->
+      <g id="hairTop" class="hidden-part">
+        <path d="M44 76 q-2 -30 34 -32 q36 2 34 32 q-6 -16 -20 -20 q-14 -4 -30 2 q-12 5 -18 18 z" fill="var(--hair)"/>
+        <path d="M52 56 q14 -12 34 -8 q14 3 20 12 q-16 -18 -54 -4 z" fill="var(--hair-light)"/>
+      </g>
+      <!-- coeur flottant (guichet couple) -->
+      <g id="heart" class="hidden-part">
+        <path d="M126 44 q6 -10 14 -3 q8 -7 14 3 q4 8 -14 20 q-18 -12 -14 -20 z" fill="var(--rose)"/>
+      </g>
+
+      <!-- bras gauche, poing sur la hanche -->
+      <path d="M40 166 Q20 180 24 212" stroke="var(--skin)" stroke-width="21" fill="none" stroke-linecap="round"/>
+      <ellipse cx="30" cy="178" rx="11" ry="13" transform="rotate(18 30 178)" fill="var(--skin)"/>
+
+      <!-- torse nu -->
+      <path d="M78 134 L106 148 Q132 157 132 184 L129 214 L27 214 L24 184 Q24 157 50 148 Z" fill="var(--skin)"/>
+      <!-- deltoides -->
+      <ellipse cx="30" cy="166" rx="17" ry="16" fill="var(--skin)"/>
+      <ellipse cx="126" cy="166" rx="17" ry="16" fill="var(--skin)"/>
+      <path d="M18 164 q6 -10 20 -10" stroke="var(--skin-shade)" stroke-width="2.4" fill="none" opacity=".55"/>
+      <path d="M138 164 q-6 -10 -20 -10" stroke="var(--skin-shade)" stroke-width="2.4" fill="none" opacity=".55"/>
+      <!-- clavicules -->
+      <path d="M54 150 q13 7 22 5" stroke="var(--skin-shade)" stroke-width="2.6" fill="none" opacity=".6" stroke-linecap="round"/>
+      <path d="M102 150 q-13 7 -22 5" stroke="var(--skin-shade)" stroke-width="2.6" fill="none" opacity=".6" stroke-linecap="round"/>
+      <!-- pectoraux -->
+      <path d="M34 168 q20 -12 42 -6 q4 14 -8 20 q-22 6 -34 -14 z" fill="var(--skin)"/>
+      <path d="M122 168 q-20 -12 -42 -6 q-4 14 8 20 q22 6 34 -14 z" fill="var(--skin)"/>
+      <path d="M34 172 q18 20 42 10" stroke="var(--skin-shade)" stroke-width="3" fill="none" stroke-linecap="round" opacity=".75"/>
+      <path d="M122 172 q-18 20 -42 10" stroke="var(--skin-shade)" stroke-width="3" fill="none" stroke-linecap="round" opacity=".75"/>
+      <path d="M78 152 L78 188" stroke="var(--skin-shade)" stroke-width="2.6" opacity=".65" stroke-linecap="round"/>
+      <!-- abdominaux -->
+      <path d="M78 190 L78 212" stroke="var(--skin-shade)" stroke-width="2.4" opacity=".6" stroke-linecap="round"/>
+      <path d="M62 194 h32" stroke="var(--skin-shade)" stroke-width="2.4" opacity=".5" stroke-linecap="round"/>
+      <path d="M64 203 h28" stroke="var(--skin-shade)" stroke-width="2.4" opacity=".45" stroke-linecap="round"/>
+      <path d="M36 186 q10 16 12 28" stroke="var(--skin-shade)" stroke-width="2.4" fill="none" opacity=".4" stroke-linecap="round"/>
+      <path d="M120 186 q-10 16 -12 28" stroke="var(--skin-shade)" stroke-width="2.4" fill="none" opacity=".4" stroke-linecap="round"/>
+      <!-- pilosite -->
+      <ellipse cx="78" cy="176" rx="17" ry="13" fill="var(--hair-light)" opacity=".42"/>
+      <path d="M78 190 L78 210" stroke="var(--hair-light)" stroke-width="5" opacity=".38" stroke-linecap="round"/>
+
+      <!-- cou -->
+      <path d="M64 124 h28 v20 q-14 8 -28 0 z" fill="var(--skin-shade)"/>
+
+      <!-- tete -->
       <ellipse cx="42" cy="98" rx="7" ry="9" fill="var(--skin-shade)"/>
       <ellipse cx="114" cy="98" rx="7" ry="9" fill="var(--skin-shade)"/>
       <path d="M45 68 h66 v34 a33 33 0 0 1 -66 0 Z" fill="var(--skin)"/>
@@ -194,27 +292,28 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;
       <path d="M47 105 q2 40 31 44 q29 -4 31 -44 q4 30 -9 42 q-9 8 -22 8 q-13 0 -22 -8 q-13 -12 -9 -42 z" fill="var(--hair)"/>
       <path d="M68 128 q10 5 20 0 q-10 8 -20 0 z" fill="#8E4A44"/>
       <path d="M64 122 q14 -7 28 0 q-6 5 -14 5 q-8 0 -14 -5 z" fill="var(--hair)"/>
-      <path d="M40 208 v-38 q0 -22 20 -28 l18 -6 l18 6 q20 6 20 28 v38 z" fill="#FBF7EE"/>
-      <path d="M78 136 l-18 6 q-20 6 -20 28 v38 h22 l6 -72 z" fill="#EFE7D8"/>
-      <path d="M60 142 q18 14 36 0 q-4 12 -18 16 q-14 -4 -18 -16 z" fill="var(--carmine)"/>
-      <circle cx="70" cy="176" r="3.2" fill="var(--gold)"/>
-      <circle cx="70" cy="190" r="3.2" fill="var(--gold)"/>
-      <circle cx="86" cy="176" r="3.2" fill="var(--gold)"/>
-      <circle cx="86" cy="190" r="3.2" fill="var(--gold)"/>
+
+      <!-- bras droit : il tourne la manivelle -->
       <g id="chefArm">
-        <path d="M100 146 q26 -6 40 -28" stroke="#FBF7EE" stroke-width="17" fill="none" stroke-linecap="round"/>
-        <circle cx="143" cy="115" r="10" fill="var(--skin)"/>
-        <circle cx="150" cy="110" r="7" fill="var(--gold)" stroke="#9A7326" stroke-width="2"/>
+        <path d="M120 164 Q141 154 145 136" stroke="var(--skin)" stroke-width="22" fill="none" stroke-linecap="round"/>
+        <ellipse cx="133" cy="150" rx="12" ry="14" transform="rotate(-24 133 150)" fill="var(--skin)"/>
+        <path d="M127 146 q9 -5 13 -15" stroke="var(--skin-shade)" stroke-width="2.4" fill="none" opacity=".5" stroke-linecap="round"/>
+        <path d="M145 136 Q151 124 150 112" stroke="var(--skin)" stroke-width="16" fill="none" stroke-linecap="round"/>
+        <circle cx="150" cy="110" r="10" fill="var(--skin)"/>
+        <circle cx="153" cy="103" r="7" fill="var(--gold)" stroke="#9A7326" stroke-width="2"/>
       </g>
     </svg>
   </div>
 
-  <button id="spinBtn">Lancer la roue</button>
+  <div class="controls">
+    <button id="spinBtn">Lancer la roue</button>
+    <button class="back" id="backBtn">&larr; Changer de guichet</button>
+  </div>
 </section>
 
 <div id="result" role="dialog" aria-modal="true">
   <div class="result-card">
-    <div class="stamp">&#9733; Verdict de la roue &#9733;</div>
+    <div class="stamp" id="resStamp">&#9733; Verdict de la roue &#9733;</div>
     <span class="emoji" id="resEmoji">&#127829;</span>
     <h2 id="resTitle">Pizza</h2>
     <p id="resText"></p>
@@ -223,71 +322,154 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;
 </div>
 
 <script>
-const OPT = {
-  pizza:  {label:"Pizza",  emoji:"\u{1F355}", color:"#A8262B", text:"#F6EFDF", line:"Le four est formel : ce soir, c'est p\u00e2te, tomate et fromage fondu."},
-  sushi:  {label:"Sushi",  emoji:"\u{1F363}", color:"#F6EFDF", text:"#241A16", line:"La roue a parl\u00e9 avec \u00e9l\u00e9gance : baguettes de sortie."},
-  burger: {label:"Burger", emoji:"\u{1F354}", color:"#D4A548", text:"#241A16", line:"Une seule part sur la roue... et elle est tomb\u00e9e."},
-  maison: {label:"Maison", emoji:"\u{1F373}", color:"#1F4A3D", text:"#F6EFDF", line:"Ce soir, le chef c'est vous. Le frigo compte sur vous."}
+/* ===================== LES DEUX GUICHETS ===================== */
+const DECKS = {
+  repas: {
+    titleA:"Repas", titleB:"du soir",
+    eyebrow:"Ce soir \u00b7 grand tirage",
+    hub:"Repas",
+    stamp:"\u2605 Verdict de la roue \u2605",
+    idle:"On mange quoi ?",
+    spinLabel:"Lancer la roue",
+    /* le burger reste sur la roue mais ne sort jamais */
+    rigged:["burger"],
+    options:{
+      pizza: {label:"Pizza", emoji:"\u{1F355}", color:"#A8262B", text:"#F6EFDF",
+              line:"Le four est formel : ce soir, c'est p\u00e2te, tomate et fromage fondu."},
+      sushi: {label:"Sushi", emoji:"\u{1F363}", color:"#F6EFDF", text:"#241A16",
+              line:"La roue a parl\u00e9 avec \u00e9l\u00e9gance : baguettes de sortie."},
+      burger:{label:"Burger", emoji:"\u{1F354}", color:"#D4A548", text:"#241A16",
+              line:"Une seule part sur la roue... et elle est tomb\u00e9e."},
+      maison:{label:"Maison", emoji:"\u{1F373}", color:"#1F4A3D", text:"#F6EFDF",
+              line:"Ce soir, le chef c'est vous. Le frigo compte sur vous."}
+    },
+    wheel:["pizza","sushi","burger","sushi","maison","sushi","pizza","sushi","maison"]
+  },
+
+  couple: {
+    titleA:"\u00c7a chauffe", titleB:"\u00e0 deux",
+    eyebrow:"Guichet n\u00b02 \u00b7 tirage sans appel",
+    hub:"\u00c0 deux",
+    stamp:"\u2605 Ordonnance du soir \u2605",
+    idle:"On tente quoi ?",
+    spinLabel:"Tirer le programme",
+    rigged:[],
+    options:{
+      bisous:  {label:"Bisous", emoji:"\u{1F48B}", color:"#D9627E", text:"#3A0E22",
+                line:"Dix bisous minimum, et pas des bisous de politesse. La roue compte."},
+      calin:   {label:"C\u00e2lin", emoji:"\u{1FAC2}", color:"#6E2352", text:"#F6EFDF",
+                line:"Deux minutes de c\u00e2lin, chrono en main, t\u00e9l\u00e9phones dans l'autre pi\u00e8ce."},
+      massage: {label:"Massage", emoji:"\u{1F486}", color:"#D4A548", text:"#241A16",
+                line:"\u00c9paules, nuque, bas du dos. Le masseur est d\u00e9sign\u00e9 d'office : c'est celui qui a lanc\u00e9."},
+      strip:   {label:"Strip", emoji:"\u{1F525}", color:"#F6EFDF", text:"#241A16",
+                line:"Une chanson en entier, un v\u00eatement de moins \u00e0 chaque refrain. Celui qui a lanc\u00e9 la roue ouvre le bal."},
+      plaid:   {label:"Plaid", emoji:"\u{1F37F}", color:"#6E2352", text:"#F6EFDF",
+                line:"Canap\u00e9, plaid, un film choisi par l'autre. Aucun droit de veto."},
+      dessert: {label:"Dessert", emoji:"\u{1F36B}", color:"#F6EFDF", text:"#241A16",
+                line:"Un dessert, deux personnes, une seule cuill\u00e8re. D\u00e9brouillez-vous."},
+      joker:   {label:"Joker", emoji:"\u{1F381}", color:"#A8262B", text:"#F6EFDF",
+                line:"Carte blanche. Celui qui n'a pas lanc\u00e9 la roue choisit le programme. Tout le programme."}
+    },
+    wheel:["bisous","calin","massage","strip","bisous","plaid","joker","massage","dessert"]
+  }
 };
-/* 9 parts : 4 sushi, 2 pizza, 2 maison, 1 burger */
-const WHEEL = ["pizza","sushi","burger","sushi","maison","sushi","pizza","sushi","maison"];
-const SEGMENTS = WHEEL.length;
-const SEG = 360 / SEGMENTS;
-const OFFSET = -SEG / 2;
-/* le burger reste sur la roue mais ne sort jamais au tirage */
-const POOL = WHEEL.map((k,i)=>k==="burger"?-1:i).filter(i=>i>=0);
 
-const svg = document.getElementById('wheelSvg');
+/* ===================== CONSTRUCTION DE LA ROUE ===================== */
+const svg=document.getElementById('wheelSvg');
 const cx=100, cy=100, r=100;
-function polar(a, rad){const t=(a-90)*Math.PI/180;return [cx+rad*Math.cos(t), cy+rad*Math.sin(t)];}
+function polar(a,rad){const t=(a-90)*Math.PI/180;return [cx+rad*Math.cos(t), cy+rad*Math.sin(t)];}
 
-let paths="";
-for(let i=0;i<SEGMENTS;i++){
-  const o=OPT[WHEEL[i]];
-  const a0=OFFSET+i*SEG, a1=OFFSET+(i+1)*SEG;
-  const [x0,y0]=polar(a0,r), [x1,y1]=polar(a1,r);
-  paths+='<path d="M'+cx+' '+cy+' L'+x0.toFixed(2)+' '+y0.toFixed(2)+' A'+r+' '+r+' 0 0 1 '+x1.toFixed(2)+' '+y1.toFixed(2)+' Z" fill="'+o.color+'" stroke="#7E1B1F" stroke-width="1.5"/>';
-  const mid=a0+SEG/2;
-  const [tx,ty]=polar(mid,63), [ex,ey]=polar(mid,86);
-  paths+='<text x="'+tx.toFixed(2)+'" y="'+ty.toFixed(2)+'" transform="rotate('+mid+' '+tx.toFixed(2)+' '+ty.toFixed(2)+')" text-anchor="middle" dominant-baseline="middle" font-family="Rye,serif" font-size="10.5" fill="'+o.text+'">'+o.label.toUpperCase()+'</text>';
-  paths+='<text x="'+ex.toFixed(2)+'" y="'+ey.toFixed(2)+'" transform="rotate('+mid+' '+ex.toFixed(2)+' '+ey.toFixed(2)+')" text-anchor="middle" dominant-baseline="middle" font-size="12">'+o.emoji+'</text>';
+let deck=null, SEG=40, POOL=[];
+
+function buildWheel(d){
+  const n=d.wheel.length; SEG=360/n;
+  const OFFSET=-SEG/2;
+  let p="";
+  for(let i=0;i<n;i++){
+    const o=d.options[d.wheel[i]];
+    const a0=OFFSET+i*SEG, a1=OFFSET+(i+1)*SEG;
+    const [x0,y0]=polar(a0,r), [x1,y1]=polar(a1,r);
+    p+='<path d="M'+cx+' '+cy+' L'+x0.toFixed(2)+' '+y0.toFixed(2)+' A'+r+' '+r+' 0 0 1 '+
+       x1.toFixed(2)+' '+y1.toFixed(2)+' Z" fill="'+o.color+'" stroke="rgba(40,12,20,.55)" stroke-width="1.5"/>';
+    const mid=a0+SEG/2;
+    const [tx,ty]=polar(mid,62), [ex,ey]=polar(mid,86);
+    const fs = o.label.length>6 ? 9 : 10.5;
+    p+='<text x="'+tx.toFixed(2)+'" y="'+ty.toFixed(2)+'" transform="rotate('+mid+' '+tx.toFixed(2)+' '+ty.toFixed(2)+
+       ')" text-anchor="middle" dominant-baseline="middle" font-family="Rye,serif" font-size="'+fs+
+       '" fill="'+o.text+'">'+o.label.toUpperCase()+'</text>';
+    p+='<text x="'+ex.toFixed(2)+'" y="'+ey.toFixed(2)+'" transform="rotate('+mid+' '+ex.toFixed(2)+' '+ey.toFixed(2)+
+       ')" text-anchor="middle" dominant-baseline="middle" font-size="12">'+o.emoji+'</text>';
+  }
+  svg.innerHTML=p+'<circle cx="'+cx+'" cy="'+cy+'" r="'+(r-1)+'" fill="none" stroke="#D4A548" stroke-width="2.5"/>';
+  POOL=d.wheel.map((k,i)=>d.rigged.includes(k)?-1:i).filter(i=>i>=0);
 }
-svg.innerHTML = paths + '<circle cx="'+cx+'" cy="'+cy+'" r="'+(r-1)+'" fill="none" stroke="#D4A548" stroke-width="2.5"/>';
 
+/* ampoules */
 const ringEl=document.getElementById('ring'), bulbs=[];
-const NB=20;
-for(let i=0;i<NB;i++){
+for(let i=0;i<20;i++){
   const b=document.createElement('div'); b.className='bulb';
-  const ang=(i/NB)*2*Math.PI - Math.PI/2, rad=47.4;
+  const ang=(i/20)*2*Math.PI-Math.PI/2, rad=47.4;
   b.style.left='calc(50% + '+(rad*Math.cos(ang)).toFixed(2)+'% - 2.3%)';
   b.style.top ='calc(50% + '+(rad*Math.sin(ang)).toFixed(2)+'% - 2.3%)';
   ringEl.appendChild(b); bulbs.push(b);
 }
 let bulbTimer=null, step=0;
-function chase(speed){clearInterval(bulbTimer);bulbTimer=setInterval(()=>{
-  bulbs.forEach((b,i)=>b.classList.toggle('on',(i+step)%2===0));step++;},speed);}
+function chase(sp){clearInterval(bulbTimer);bulbTimer=setInterval(()=>{
+  bulbs.forEach((b,i)=>b.classList.toggle('on',(i+step)%2===0));step++;},sp);}
 chase(700);
 
+/* ===================== NAVIGATION ===================== */
 const intro=document.getElementById('intro'), stage=document.getElementById('stage');
-document.getElementById('revealBtn').addEventListener('click',()=>{
-  intro.style.display='none'; stage.classList.add('show');
-});
-
-const spinBtn=document.getElementById('spinBtn');
-const chef=document.getElementById('chef');
-const bubble=document.getElementById('bubble');
+const titleEl=document.getElementById('title'), eyebrowEl=document.getElementById('eyebrow');
+const hubEl=document.getElementById('hub'), bubble=document.getElementById('bubble');
+const spinBtn=document.getElementById('spinBtn'), chef=document.getElementById('chef');
+const toque=document.getElementById('toque'), hairTop=document.getElementById('hairTop');
+const heart=document.getElementById('heart');
 let rotation=0, spinning=false;
 
-spinBtn.addEventListener('click',()=>{
+document.querySelectorAll('.ticket').forEach(btn=>{
+  btn.addEventListener('click',()=>openDeck(btn.dataset.deck));
+});
+
+function openDeck(key){
+  deck=DECKS[key];
+  document.body.classList.toggle('deck-couple', key==='couple');
+  titleEl.innerHTML=deck.titleA+' <span>'+deck.titleB+'</span>';
+  eyebrowEl.textContent=deck.eyebrow;
+  hubEl.textContent=deck.hub;
+  document.getElementById('resStamp').textContent=deck.stamp;
+  bubble.textContent=deck.idle;
+  bubble.classList.remove('hidden');
+  spinBtn.textContent=deck.spinLabel;
+  toque.classList.toggle('hidden-part', key==='couple');
+  hairTop.classList.toggle('hidden-part', key!=='couple');
+  heart.classList.toggle('hidden-part', key!=='couple');
+  rotation=0; svg.classList.remove('spinning'); svg.style.transform='rotate(0deg)';
+  buildWheel(deck);
+  intro.style.display='none';
+  stage.classList.remove('show'); void stage.offsetWidth; stage.classList.add('show');
+}
+
+document.getElementById('backBtn').addEventListener('click',()=>{
   if(spinning) return;
+  stage.classList.remove('show');
+  intro.style.display='flex';
+  document.body.classList.remove('deck-couple');
+  titleEl.innerHTML='La <span>Roue</span>';
+  eyebrowEl.textContent='Deux guichets \u00b7 un seul verdict';
+});
+
+/* ===================== TIRAGE ===================== */
+spinBtn.addEventListener('click',()=>{
+  if(spinning||!deck) return;
   spinning=true; spinBtn.disabled=true;
   chase(90); chef.classList.add('bobbing'); bubble.classList.add('hidden');
 
   const target=POOL[Math.floor(Math.random()*POOL.length)];
   const jitter=(Math.random()*0.5-0.25)*SEG;
-  const landing=(360 - target*SEG) % 360 + jitter;
+  const landing=(360-target*SEG)%360+jitter;
   const turns=5+Math.floor(Math.random()*3);
-  rotation = rotation - (rotation%360) + turns*360 + landing;
+  rotation = rotation-(rotation%360)+turns*360+landing;
 
   svg.classList.add('spinning');
   requestAnimationFrame(()=>{svg.style.transform='rotate('+rotation+'deg)';});
@@ -296,7 +478,7 @@ spinBtn.addEventListener('click',()=>{
   setTimeout(()=>{
     svg.classList.remove('spinning'); chase(700);
     chef.classList.remove('bobbing');
-    showResult(OPT[WHEEL[target]]);
+    showResult(deck.options[deck.wheel[target]]);
     spinning=false; spinBtn.disabled=false;
   }, reduced?1300:5300);
 });
@@ -307,7 +489,7 @@ function showResult(o){
   document.getElementById('resTitle').textContent= o.label==="Maison" ? "On mange \u00e0 la maison" : o.label;
   document.getElementById('resText').textContent=o.line;
   result.classList.add('show');
-  bubble.textContent = o.label==="Maison" ? "Aux fourneaux !" : o.label+", bon choix !";
+  bubble.textContent=o.label+", d\u00e9cid\u00e9 !";
   confetti();
 }
 document.getElementById('againBtn').addEventListener('click',()=>{
@@ -317,7 +499,9 @@ result.addEventListener('click',e=>{if(e.target===result){result.classList.remov
 
 function confetti(){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const colors=['#D4A548','#A8262B','#F6EFDF','#1F4A3D','#E8C87E'];
+  const couple=document.body.classList.contains('deck-couple');
+  const colors= couple ? ['#D9627E','#6E2352','#F6EFDF','#D4A548','#F0A7BC']
+                       : ['#D4A548','#A8262B','#F6EFDF','#1F4A3D','#E8C87E'];
   for(let i=0;i<60;i++){
     const c=document.createElement('div'); c.className='confetti';
     c.style.left=Math.random()*100+'vw';
