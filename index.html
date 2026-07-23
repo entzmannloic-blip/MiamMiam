@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Repas du soir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --carmine:#A8262B; --carmine-dark:#7E1B1F; --cream:#F6EFDF;
+  --gold:#D4A548; --gold-light:#E8C87E; --pine:#1F4A3D; --ink:#241A16;
+  --bulb-off:#5A3A2E; --skin:#E9B896; --skin-shade:#D49E7C;
+  --hair:#4A3122; --hair-light:#6B4830;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'DM Sans',sans-serif;color:var(--cream);
+  background:
+    radial-gradient(ellipse at 50% -20%, #3d2420 0%, transparent 60%),
+    repeating-linear-gradient(90deg, var(--carmine-dark) 0 64px, var(--carmine) 64px 128px);
+  min-height:100dvh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow-x:hidden;
+  padding:16px 10px calc(16px + env(safe-area-inset-bottom));
+  position:relative;
+}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 45%, transparent 40%, rgba(20,10,8,.55) 100%)}
+
+.marquee{text-align:center;margin-bottom:4px;position:relative;z-index:2}
+.marquee .eyebrow{font-size:10px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--gold-light);font-weight:700;margin-bottom:5px}
+.marquee h1{font-family:'Rye',serif;font-size:clamp(24px,6.6vw,42px);line-height:1.05;color:var(--cream);
+  text-shadow:0 2px 0 var(--carmine-dark),0 4px 0 rgba(0,0,0,.35),0 0 24px rgba(212,165,72,.35)}
+.marquee h1 span{color:var(--gold)}
+
+#intro{display:flex;flex-direction:column;align-items:center;gap:22px;z-index:2;text-align:center;
+  animation:fadeUp .6s ease both;margin-top:16px}
+#intro p{max-width:310px;font-size:14px;line-height:1.55;color:#EBDFC6}
+.ticket{font-family:'Rye',serif;font-size:clamp(17px,4.6vw,22px);color:var(--ink);
+  background:linear-gradient(180deg,var(--gold-light),var(--gold));border:none;cursor:pointer;
+  padding:16px 30px;border-radius:8px;position:relative;
+  box-shadow:0 6px 0 #8F6C24,0 12px 24px rgba(0,0,0,.45);
+  transition:transform .12s ease,box-shadow .12s ease;letter-spacing:.03em}
+.ticket::before,.ticket::after{content:"";position:absolute;top:50%;width:16px;height:16px;
+  border-radius:50%;background:var(--carmine-dark);transform:translateY(-50%)}
+.ticket::before{left:-8px}.ticket::after{right:-8px}
+.ticket:active{transform:translateY(4px);box-shadow:0 2px 0 #8F6C24,0 6px 12px rgba(0,0,0,.45)}
+.ticket:focus-visible{outline:3px solid var(--cream);outline-offset:4px}
+
+#stage{display:none;flex-direction:column;align-items:center;z-index:2;width:100%}
+#stage.show{display:flex;animation:popIn .7s cubic-bezier(.2,1.4,.4,1) both}
+
+/* ---- SCENE : la roue est centrée dans la page, le chef vient dans la marge ---- */
+.scene{position:relative;width:min(58vw,300px);aspect-ratio:1;margin:16px auto 20px}
+.wheel-wrap{position:absolute;inset:0}
+
+.pointer{position:absolute;top:-9px;left:50%;transform:translateX(-50%);z-index:6;
+  filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
+.ring{position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 30% 25%,#C33A3F,var(--carmine-dark) 70%);
+  box-shadow:0 0 0 5px var(--gold),0 0 0 7px var(--carmine-dark),
+    0 18px 46px rgba(0,0,0,.6),inset 0 0 28px rgba(0,0,0,.45)}
+.bulb{position:absolute;width:4.6%;aspect-ratio:1;border-radius:50%;background:var(--bulb-off);
+  box-shadow:inset 0 -1px 2px rgba(0,0,0,.5);transition:background .12s,box-shadow .12s}
+.bulb.on{background:#FFE9A8;box-shadow:0 0 9px 3px rgba(255,220,140,.85),inset 0 0 3px #fff}
+
+#wheelSvg{position:absolute;inset:7.5%;border-radius:50%;transform:rotate(0deg);will-change:transform}
+#wheelSvg.spinning{transition:transform 5.2s cubic-bezier(.12,.68,.05,1)}
+
+.hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:23%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,var(--gold-light),var(--gold) 55%,#9A7326);
+  box-shadow:0 0 0 4px var(--carmine-dark),0 4px 12px rgba(0,0,0,.5);z-index:5;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Rye',serif;color:var(--carmine-dark);font-size:clamp(10px,2.5vw,13px);
+  user-select:none;letter-spacing:.02em}
+
+/* ---- CHEF : dans la marge gauche, la main sur la roue ---- */
+.chef{position:absolute;left:-36%;bottom:-4%;width:44%;z-index:8;
+  filter:drop-shadow(0 10px 18px rgba(0,0,0,.55));transform-origin:50% 100%}
+.chef.bobbing{animation:bob .38s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-5px) rotate(1.5deg)}}
+#chefArm{transform-origin:78px 118px}
+.chef.bobbing #chefArm{animation:crank .38s linear infinite}
+@keyframes crank{0%{transform:rotate(-16deg)}50%{transform:rotate(14deg)}100%{transform:rotate(-16deg)}}
+
+.bubble{position:absolute;left:-38%;top:-6%;z-index:9;
+  background:var(--cream);color:var(--ink);border:3px solid var(--gold);border-radius:12px;
+  padding:7px 10px;font-size:11.5px;font-weight:500;line-height:1.35;width:110px;text-align:center;
+  box-shadow:0 6px 14px rgba(0,0,0,.4);transition:opacity .25s,transform .25s}
+.bubble::after{content:"";position:absolute;bottom:-11px;left:24px;
+  border:8px solid transparent;border-top-color:var(--gold)}
+.bubble.hidden{opacity:0;transform:translateY(6px) scale(.9);pointer-events:none}
+
+#spinBtn{font-family:'Rye',serif;font-size:clamp(17px,4.4vw,22px);letter-spacing:.06em;color:var(--cream);
+  background:linear-gradient(180deg,#C33A3F,var(--carmine) 60%,var(--carmine-dark));
+  border:3px solid var(--gold);border-radius:999px;padding:13px 38px;cursor:pointer;
+  box-shadow:0 6px 0 #4F1012,0 14px 28px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.25);
+  transition:transform .12s,box-shadow .12s,opacity .3s}
+#spinBtn:active{transform:translateY(4px);box-shadow:0 2px 0 #4F1012,0 8px 16px rgba(0,0,0,.5)}
+#spinBtn:disabled{opacity:.45;cursor:default}
+#spinBtn:focus-visible{outline:3px solid var(--cream);outline-offset:4px}
+
+#result{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;
+  background:rgba(20,10,8,.72);backdrop-filter:blur(3px);padding:20px}
+#result.show{display:flex}
+.result-card{background:var(--cream);color:var(--ink);border-radius:14px;border:4px solid var(--gold);
+  box-shadow:0 24px 60px rgba(0,0,0,.6);text-align:center;padding:32px 26px 26px;max-width:340px;width:100%;
+  animation:popIn .55s cubic-bezier(.2,1.5,.4,1) both}
+.result-card .stamp{font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--carmine);font-weight:700;margin-bottom:10px}
+.result-card .emoji{font-size:56px;line-height:1;display:block;margin-bottom:10px}
+.result-card h2{font-family:'Rye',serif;font-size:28px;color:var(--carmine-dark);margin-bottom:8px}
+.result-card p{font-size:13.5px;line-height:1.5;color:#5C4A3E;margin-bottom:20px}
+.result-card .again{font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:.05em;
+  text-transform:uppercase;background:var(--carmine);color:var(--cream);border:none;border-radius:999px;
+  padding:12px 26px;cursor:pointer;box-shadow:0 4px 0 var(--carmine-dark);transition:transform .12s,box-shadow .12s}
+.result-card .again:active{transform:translateY(3px);box-shadow:0 1px 0 var(--carmine-dark)}
+
+.confetti{position:fixed;top:-12px;z-index:25;pointer-events:none;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.9}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes popIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+
+@media (min-width:560px){
+  .scene{width:320px}
+  .chef{left:-42%;width:48%}
+  .bubble{left:-44%;width:126px;font-size:12.5px}
+}
+@media (prefers-reduced-motion: reduce){
+  #wheelSvg.spinning{transition-duration:1.2s}
+  .confetti{display:none}
+  #intro,#stage.show,.result-card{animation:none}
+  .chef.bobbing,.chef.bobbing #chefArm{animation:none}
+}
+</style>
+</head>
+<body>
+
+<header class="marquee">
+  <div class="eyebrow">Ce soir &middot; Grand tirage</div>
+  <h1>Repas <span>du soir</span></h1>
+</header>
+
+<section id="intro">
+  <p>Fini les d&eacute;bats de vingt minutes devant le frigo. Le chef tourne, la roue d&eacute;cide.</p>
+  <button class="ticket" id="revealBtn">&#127914; Faire appara&icirc;tre la roue</button>
+</section>
+
+<section id="stage" aria-live="polite">
+  <div class="scene">
+    <div class="wheel-wrap">
+      <svg class="pointer" width="42" height="50" viewBox="0 0 46 54" aria-hidden="true">
+        <path d="M23 54 L2 10 Q2 2 10 2 L36 2 Q44 2 44 10 Z" fill="#D4A548" stroke="#7E1B1F" stroke-width="3"/>
+        <path d="M23 46 L10 14 L18 14 Z" fill="#A8262B"/>
+        <path d="M23 46 L36 14 L28 14 Z" fill="#F6EFDF"/>
+      </svg>
+      <div class="ring" id="ring"></div>
+      <svg id="wheelSvg" viewBox="0 0 200 200" role="img" aria-label="Roue des repas"></svg>
+      <div class="hub">Repas</div>
+    </div>
+
+    <div class="bubble" id="bubble">On mange quoi&nbsp;?</div>
+
+    <svg class="chef" id="chef" viewBox="0 0 160 210" aria-hidden="true">
+      <g>
+        <ellipse cx="48" cy="34" rx="21" ry="19" fill="#FBF7EE"/>
+        <ellipse cx="78" cy="24" rx="24" ry="21" fill="#FFFDF7"/>
+        <ellipse cx="106" cy="36" rx="20" ry="18" fill="#F3ECE0"/>
+        <rect x="42" y="48" width="72" height="17" rx="6" fill="#FFFDF7"/>
+        <rect x="42" y="58" width="72" height="7" rx="3" fill="#E5DCCB"/>
+      </g>
+      <ellipse cx="42" cy="98" rx="7" ry="9" fill="var(--skin-shade)"/>
+      <ellipse cx="114" cy="98" rx="7" ry="9" fill="var(--skin-shade)"/>
+      <path d="M45 68 h66 v34 a33 33 0 0 1 -66 0 Z" fill="var(--skin)"/>
+      <ellipse cx="78" cy="100" rx="33" ry="34" fill="var(--skin)"/>
+      <path d="M45 74 q6 -12 22 -13 q18 -1 30 4 q10 4 14 9 q-12 -3 -26 -2 q-16 1 -25 8 q-8 6 -15 6 z" fill="var(--hair)"/>
+      <path d="M45 74 q-4 12 -2 22 q-5 -10 -3 -22 z" fill="var(--hair)"/>
+      <path d="M111 74 q6 10 4 22 q3 -12 -4 -22 z" fill="var(--hair)"/>
+      <path d="M58 90 q9 -5 18 -1" stroke="var(--hair)" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M82 89 q9 -4 17 1" stroke="var(--hair)" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="66" cy="101" rx="6" ry="6.5" fill="#FFFFFF"/>
+      <ellipse cx="91" cy="101" rx="6" ry="6.5" fill="#FFFFFF"/>
+      <circle cx="67" cy="102" r="3.4" fill="#5B7C93"/>
+      <circle cx="92" cy="102" r="3.4" fill="#5B7C93"/>
+      <circle cx="66" cy="101" r="1.5" fill="#1B1310"/>
+      <circle cx="91" cy="101" r="1.5" fill="#1B1310"/>
+      <path d="M78 106 q4 8 0 11 q-3 2 -5 0" stroke="var(--skin-shade)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M46 104 q0 34 32 40 q32 -6 32 -40 q0 22 -8 30 q-9 9 -24 9 q-15 0 -24 -9 q-8 -8 -8 -30 z" fill="var(--hair-light)"/>
+      <path d="M47 105 q2 40 31 44 q29 -4 31 -44 q4 30 -9 42 q-9 8 -22 8 q-13 0 -22 -8 q-13 -12 -9 -42 z" fill="var(--hair)"/>
+      <path d="M68 128 q10 5 20 0 q-10 8 -20 0 z" fill="#8E4A44"/>
+      <path d="M64 122 q14 -7 28 0 q-6 5 -14 5 q-8 0 -14 -5 z" fill="var(--hair)"/>
+      <path d="M40 208 v-38 q0 -22 20 -28 l18 -6 l18 6 q20 6 20 28 v38 z" fill="#FBF7EE"/>
+      <path d="M78 136 l-18 6 q-20 6 -20 28 v38 h22 l6 -72 z" fill="#EFE7D8"/>
+      <path d="M60 142 q18 14 36 0 q-4 12 -18 16 q-14 -4 -18 -16 z" fill="var(--carmine)"/>
+      <circle cx="70" cy="176" r="3.2" fill="var(--gold)"/>
+      <circle cx="70" cy="190" r="3.2" fill="var(--gold)"/>
+      <circle cx="86" cy="176" r="3.2" fill="var(--gold)"/>
+      <circle cx="86" cy="190" r="3.2" fill="var(--gold)"/>
+      <g id="chefArm">
+        <path d="M100 146 q26 -6 40 -28" stroke="#FBF7EE" stroke-width="17" fill="none" stroke-linecap="round"/>
+        <circle cx="143" cy="115" r="10" fill="var(--skin)"/>
+        <circle cx="150" cy="110" r="7" fill="var(--gold)" stroke="#9A7326" stroke-width="2"/>
+      </g>
+    </svg>
+  </div>
+
+  <button id="spinBtn">Lancer la roue</button>
+</section>
+
+<div id="result" role="dialog" aria-modal="true">
+  <div class="result-card">
+    <div class="stamp">&#9733; Verdict de la roue &#9733;</div>
+    <span class="emoji" id="resEmoji">&#127829;</span>
+    <h2 id="resTitle">Pizza</h2>
+    <p id="resText"></p>
+    <button class="again" id="againBtn">Relancer la roue</button>
+  </div>
+</div>
+
+<script>
+const OPT = {
+  pizza:  {label:"Pizza",  emoji:"\u{1F355}", color:"#A8262B", text:"#F6EFDF", line:"Le four est formel : ce soir, c'est p\u00e2te, tomate et fromage fondu."},
+  sushi:  {label:"Sushi",  emoji:"\u{1F363}", color:"#F6EFDF", text:"#241A16", line:"La roue a parl\u00e9 avec \u00e9l\u00e9gance : baguettes de sortie."},
+  burger: {label:"Burger", emoji:"\u{1F354}", color:"#D4A548", text:"#241A16", line:"Une seule part sur la roue, et elle est tomb\u00e9e. C'est m\u00e9rit\u00e9."},
+  maison: {label:"Maison", emoji:"\u{1F373}", color:"#1F4A3D", text:"#F6EFDF", line:"Ce soir, le chef c'est vous. Le frigo compte sur vous."}
+};
+/* 9 parts : 4 sushi, 2 pizza, 2 maison, 1 burger */
+const WHEEL = ["pizza","sushi","burger","sushi","maison","sushi","pizza","sushi","maison"];
+const SEGMENTS = WHEEL.length;
+const SEG = 360 / SEGMENTS;
+const OFFSET = -SEG / 2;
+
+const svg = document.getElementById('wheelSvg');
+const cx=100, cy=100, r=100;
+function polar(a, rad){const t=(a-90)*Math.PI/180;return [cx+rad*Math.cos(t), cy+rad*Math.sin(t)];}
+
+let paths="";
+for(let i=0;i<SEGMENTS;i++){
+  const o=OPT[WHEEL[i]];
+  const a0=OFFSET+i*SEG, a1=OFFSET+(i+1)*SEG;
+  const [x0,y0]=polar(a0,r), [x1,y1]=polar(a1,r);
+  paths+='<path d="M'+cx+' '+cy+' L'+x0.toFixed(2)+' '+y0.toFixed(2)+' A'+r+' '+r+' 0 0 1 '+x1.toFixed(2)+' '+y1.toFixed(2)+' Z" fill="'+o.color+'" stroke="#7E1B1F" stroke-width="1.5"/>';
+  const mid=a0+SEG/2;
+  const [tx,ty]=polar(mid,63), [ex,ey]=polar(mid,86);
+  paths+='<text x="'+tx.toFixed(2)+'" y="'+ty.toFixed(2)+'" transform="rotate('+mid+' '+tx.toFixed(2)+' '+ty.toFixed(2)+')" text-anchor="middle" dominant-baseline="middle" font-family="Rye,serif" font-size="10.5" fill="'+o.text+'">'+o.label.toUpperCase()+'</text>';
+  paths+='<text x="'+ex.toFixed(2)+'" y="'+ey.toFixed(2)+'" transform="rotate('+mid+' '+ex.toFixed(2)+' '+ey.toFixed(2)+')" text-anchor="middle" dominant-baseline="middle" font-size="12">'+o.emoji+'</text>';
+}
+svg.innerHTML = paths + '<circle cx="'+cx+'" cy="'+cy+'" r="'+(r-1)+'" fill="none" stroke="#D4A548" stroke-width="2.5"/>';
+
+const ringEl=document.getElementById('ring'), bulbs=[];
+const NB=20;
+for(let i=0;i<NB;i++){
+  const b=document.createElement('div'); b.className='bulb';
+  const ang=(i/NB)*2*Math.PI - Math.PI/2, rad=47.4;
+  b.style.left='calc(50% + '+(rad*Math.cos(ang)).toFixed(2)+'% - 2.3%)';
+  b.style.top ='calc(50% + '+(rad*Math.sin(ang)).toFixed(2)+'% - 2.3%)';
+  ringEl.appendChild(b); bulbs.push(b);
+}
+let bulbTimer=null, step=0;
+function chase(speed){clearInterval(bulbTimer);bulbTimer=setInterval(()=>{
+  bulbs.forEach((b,i)=>b.classList.toggle('on',(i+step)%2===0));step++;},speed);}
+chase(700);
+
+const intro=document.getElementById('intro'), stage=document.getElementById('stage');
+document.getElementById('revealBtn').addEventListener('click',()=>{
+  intro.style.display='none'; stage.classList.add('show');
+});
+
+const spinBtn=document.getElementById('spinBtn');
+const chef=document.getElementById('chef');
+const bubble=document.getElementById('bubble');
+let rotation=0, spinning=false;
+
+spinBtn.addEventListener('click',()=>{
+  if(spinning) return;
+  spinning=true; spinBtn.disabled=true;
+  chase(90); chef.classList.add('bobbing'); bubble.classList.add('hidden');
+
+  const target=Math.floor(Math.random()*SEGMENTS);
+  const jitter=(Math.random()*0.5-0.25)*SEG;
+  const landing=(360 - target*SEG) % 360 + jitter;
+  const turns=5+Math.floor(Math.random()*3);
+  rotation = rotation - (rotation%360) + turns*360 + landing;
+
+  svg.classList.add('spinning');
+  requestAnimationFrame(()=>{svg.style.transform='rotate('+rotation+'deg)';});
+
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  setTimeout(()=>{
+    svg.classList.remove('spinning'); chase(700);
+    chef.classList.remove('bobbing');
+    showResult(OPT[WHEEL[target]]);
+    spinning=false; spinBtn.disabled=false;
+  }, reduced?1300:5300);
+});
+
+const result=document.getElementById('result');
+function showResult(o){
+  document.getElementById('resEmoji').textContent=o.emoji;
+  document.getElementById('resTitle').textContent= o.label==="Maison" ? "On mange \u00e0 la maison" : o.label;
+  document.getElementById('resText').textContent=o.line;
+  result.classList.add('show');
+  bubble.textContent = o.label==="Maison" ? "Aux fourneaux !" : o.label+", bon choix !";
+  confetti();
+}
+document.getElementById('againBtn').addEventListener('click',()=>{
+  result.classList.remove('show'); bubble.classList.remove('hidden');
+});
+result.addEventListener('click',e=>{if(e.target===result){result.classList.remove('show');bubble.classList.remove('hidden');}});
+
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const colors=['#D4A548','#A8262B','#F6EFDF','#1F4A3D','#E8C87E'];
+  for(let i=0;i<60;i++){
+    const c=document.createElement('div'); c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.width=c.style.height=(6+Math.random()*7)+'px';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDuration=(2.2+Math.random()*1.8)+'s';
+    c.style.animationDelay=(Math.random()*0.4)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4600);
+  }
+}
+</script>
+</body>
+</html>
